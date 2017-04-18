@@ -374,6 +374,16 @@ func (ng *Engine) execEvalStmt(ctx context.Context, query *query, s *EvalStmt) (
 
 		evalTimer.Stop()
 		queryInnerEval.Observe(evalTimer.ElapsedTime().Seconds())
+		// Point might have a different timestamp, force it to the evaluation
+		// timestamp as that is when we ran the evaluation.
+		switch v := val.(type) {
+		case Scalar:
+			v.T = timeMilliseconds(s.Start)
+		case Vector:
+			for i := range v {
+				v[i].Point.T = timeMilliseconds(s.Start)
+			}
+		}
 
 		return val, nil
 	}
@@ -405,7 +415,7 @@ func (ng *Engine) execEvalStmt(ctx context.Context, query *query, s *EvalStmt) (
 				ss = Series{Points: make([]Point, 0, numSteps)}
 				Seriess[0] = ss
 			}
-			ss.Points = append(ss.Points, Point(v))
+			ss.Points = append(ss.Points, Point{V: v.V, T: timeMilliseconds(ts)})
 			Seriess[0] = ss
 		case Vector:
 			for _, sample := range v {
@@ -418,6 +428,7 @@ func (ng *Engine) execEvalStmt(ctx context.Context, query *query, s *EvalStmt) (
 					}
 					Seriess[h] = ss
 				}
+				sample.Point.T = timeMilliseconds(ts)
 				ss.Points = append(ss.Points, sample.Point)
 				Seriess[h] = ss
 			}
