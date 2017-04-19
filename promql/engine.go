@@ -738,7 +738,7 @@ func (ev *evaluator) vectorSelector(node *VectorSelector) Vector {
 				continue
 			}
 		}
-		if math.Float64bits(v) == value.StaleNaN {
+		if value.IsStaleNaN(v) {
 			continue
 		}
 		vec = append(vec, Sample{
@@ -811,7 +811,7 @@ func (ev *evaluator) matrixSelector(node *MatrixSelector) Matrix {
 		buf := it.Buffer()
 		for buf.Next() {
 			t, v := buf.At()
-			if math.Float64bits(v) == value.StaleNaN {
+			if value.IsStaleNaN(v) {
 				continue
 			}
 			// Values in the buffer are guaranteed to be smaller than maxt.
@@ -821,7 +821,7 @@ func (ev *evaluator) matrixSelector(node *MatrixSelector) Matrix {
 		}
 		// The seeked sample might also be in the range.
 		t, v = it.Values()
-		if t == maxt && math.Float64bits(v) != value.StaleNaN {
+		if t == maxt && !value.IsStaleNaN(v) {
 			allPoints = append(allPoints, Point{T: t, V: v})
 		}
 
