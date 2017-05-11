@@ -211,16 +211,16 @@ func (u URL) MarshalYAML() (interface{}, error) {
 
 // Config is the top-level configuration for Prometheus's config files.
 type Config struct {
-	GlobalConfig   GlobalConfig    `yaml:"global"`
-	AlertingConfig AlertingConfig  `yaml:"alerting,omitempty"`
-	RuleFiles      []string        `yaml:"rule_files,omitempty"`
-	ScrapeConfigs  []*ScrapeConfig `yaml:"scrape_configs,omitempty"`
+	GlobalConfig   GlobalConfig    `yaml:"global" json:"global,omitempty"`
+	AlertingConfig AlertingConfig  `yaml:"alerting,omitempty" json:"alerting,omitempty"`
+	RuleFiles      []string        `yaml:"rule_files,omitempty" json:"rule_files,omitempty"`
+	ScrapeConfigs  []*ScrapeConfig `yaml:"scrape_configs,omitempty" json:"scrape_configs, omitempty"`
 
-	RemoteWriteConfigs []*RemoteWriteConfig `yaml:"remote_write,omitempty"`
-	RemoteReadConfigs  []*RemoteReadConfig  `yaml:"remote_read,omitempty"`
+	RemoteWriteConfigs []*RemoteWriteConfig `yaml:"remote_write,omitempty" json:"remote_write, omitempty"`
+	RemoteReadConfigs  []*RemoteReadConfig  `yaml:"remote_read,omitempty" json:"remote_read, omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:"-"`
 
 	// original is the input from which the config was parsed.
 	original string
@@ -241,6 +241,11 @@ func (s Secret) MarshalYAML() (interface{}, error) {
 		return "<secret>", nil
 	}
 	return nil, nil
+}
+
+// MarshalJSON implements the json.Marshaler interface for Secrets.
+func (s Secret) MarshalJSON() ([]byte, error) {
+	return json.Marshal("<secret>")
 }
 
 // resolveFilepaths joins all relative paths in a configuration

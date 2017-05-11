@@ -67,29 +67,27 @@ type Handler struct {
 
 	apiV1 *api_v1.API
 
-	router       *route.Router
-	listenErrCh  chan error
-	quitCh       chan struct{}
-	reloadCh     chan chan error
-	options      *Options
-	configString string
-	versionInfo  *PrometheusVersion
-	birth        time.Time
-	cwd          string
-	flagsMap     map[string]string
+	router      *route.Router
+	listenErrCh chan error
+	quitCh      chan struct{}
+	reloadCh    chan chan error
+	options     *Options
+	config      *config.Config
+	versionInfo *PrometheusVersion
+	birth       time.Time
+	cwd         string
+	flagsMap    map[string]string
 
-	externalLabels model.LabelSet
-	mtx            sync.RWMutex
-	now            func() model.Time
+	mtx sync.RWMutex
+	now func() model.Time
 }
 
-// ApplyConfig updates the status state as the new config requires.
+// ApplyConfig updates the config field of the Handler struct
 func (h *Handler) ApplyConfig(conf *config.Config) error {
 	h.mtx.Lock()
 	defer h.mtx.Unlock()
 
-	h.externalLabels = conf.GlobalConfig.ExternalLabels
-	h.configString = conf.String()
+	h.config = conf
 
 	return nil
 }
@@ -155,9 +153,19 @@ func New(o *Options) *Handler {
 		storage:       o.Storage,
 		notifier:      o.Notifier,
 
-		apiV1: api_v1.NewAPI(o.QueryEngine, o.Storage, o.TargetManager, o.Notifier),
-		now:   model.Now,
+		now: model.Now,
 	}
+
+	h.apiV1 = api_v1.NewAPI(
+		o.QueryEngine,
+		o.Storage, o.TargetManager,
+		o.Notifier,
+		func() config.Config {
+			h.mtx.RLock()
+			defer h.mtx.RUnlock()
+			return *h.config
+		},
+	)
 
 	if o.RoutePrefix != "/" {
 		// If the prefix is missing for the root path, prepend it.
@@ -178,7 +186,7 @@ func New(o *Options) *Handler {
 	router.Get("/graph", instrf("graph", h.graph))
 	router.Get("/status", instrf("status", h.status))
 	router.Get("/flags", instrf("flags", h.flags))
-	router.Get("/config", instrf("config", h.config))
+	router.Get("/config", instrf("config", h.serveConfig))
 	router.Get("/rules", instrf("rules", h.rules))
 	router.Get("/targets", instrf("targets", h.targets))
 	router.Get("/version", instrf("version", h.version))
@@ -363,11 +371,11 @@ func (h *Handler) flags(w http.ResponseWriter, r *http.Request) {
 	h.executeTemplate(w, "flags.html", h.flagsMap)
 }
 
-func (h *Handler) config(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) serveConfig(w http.ResponseWriter, r *http.Request) {
 	h.mtx.RLock()
 	defer h.mtx.RUnlock()
 
-	h.executeTemplate(w, "config.html", h.configString)
+	h.executeTemplate(w, "config.html", h.config.String())
 }
 
 func (h *Handler) rules(w http.ResponseWriter, r *http.Request) {

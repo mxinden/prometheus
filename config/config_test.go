@@ -15,6 +15,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"reflect"
@@ -538,15 +539,40 @@ func TestLoadConfig(t *testing.T) {
 	if !reflect.DeepEqual(c, expectedConf) {
 		t.Fatalf("%s: unexpected config result: \n\n%s\n expected\n\n%s", "testdata/conf.good.yml", bgot, bexp)
 	}
+}
 
-	// String method must not reveal authentication credentials.
-	s := c.String()
-	secretRe := regexp.MustCompile("<secret>")
-	matches := secretRe.FindAllStringIndex(s, -1)
-	if len(matches) != 6 || strings.Contains(s, "mysecret") {
-		t.Fatalf("config's String method reveals authentication credentials.")
+// YAML and JSON marsheling must not reveal authentication credentials.
+func TestElideSecrets(t *testing.T) {
+	c, err := LoadFile("testdata/conf.good.yml")
+	if err != nil {
+		t.Fatalf("Error parsing %s: %s", "testdata/conf.good.yml", err)
 	}
 
+	secretRe := regexp.MustCompile(`\\u003csecret\\u003e|<secret>`)
+
+	yamlConfig, err := yaml.Marshal(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	jsonConfig, err := json.Marshal(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	configStrings := []struct{ format, config string }{
+		struct{ format, config string }{"yaml", string(yamlConfig)},
+		struct{ format, config string }{"json", string(jsonConfig)},
+	}
+
+	for _, cs := range configStrings {
+		matches := secretRe.FindAllStringIndex(cs.config, -1)
+		fmt.Println(cs.config)
+		if len(matches) != 6 || strings.Contains(cs.config, "mysecret") {
+			fmt.Println(matches)
+			t.Fatalf(fmt.Sprintf("%s marshal reveals authentication credentials.", cs.format))
+		}
+	}
 }
 
 var expectedErrors = []struct {
