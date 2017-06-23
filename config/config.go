@@ -211,7 +211,7 @@ func (u URL) MarshalYAML() (interface{}, error) {
 
 // Config is the top-level configuration for Prometheus's config files.
 type Config struct {
-	GlobalConfig   GlobalConfig    `yaml:"global" json:"global,omitempty"`
+	GlobalConfig   GlobalConfig    `yaml:"global" json:"global"`
 	AlertingConfig AlertingConfig  `yaml:"alerting,omitempty" json:"alerting,omitempty"`
 	RuleFiles      []string        `yaml:"rule_files,omitempty" json:"rule_files,omitempty"`
 	ScrapeConfigs  []*ScrapeConfig `yaml:"scrape_configs,omitempty" json:"scrape_configs, omitempty"`
@@ -220,7 +220,7 @@ type Config struct {
 	RemoteReadConfigs  []*RemoteReadConfig  `yaml:"remote_read,omitempty" json:"remote_read, omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline" json:"-"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 
 	// original is the input from which the config was parsed.
 	original string
@@ -372,16 +372,16 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // objects.
 type GlobalConfig struct {
 	// How frequently to scrape targets by default.
-	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty"`
+	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty" json:"scrape_interval,omitempty"`
 	// The default timeout when scraping targets.
-	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty"`
+	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty" json:"scrape_timeout,omitempty"`
 	// How frequently to evaluate rules by default.
-	EvaluationInterval model.Duration `yaml:"evaluation_interval,omitempty"`
+	EvaluationInterval model.Duration `yaml:"evaluation_interval,omitempty" json:"evaluation_interval,omitempty"`
 	// The labels to add to any timeseries that this Prometheus instance scrapes.
-	ExternalLabels model.LabelSet `yaml:"external_labels,omitempty"`
+	ExternalLabels model.LabelSet `yaml:"external_labels,omitempty" json:"external_labels,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -429,18 +429,18 @@ func (c *GlobalConfig) isZero() bool {
 // TLSConfig configures the options for TLS connections.
 type TLSConfig struct {
 	// The CA cert to use for the targets.
-	CAFile string `yaml:"ca_file,omitempty"`
+	CAFile string `yaml:"ca_file,omitempty" json:"ca_file,omitempty"`
 	// The client cert file for the targets.
-	CertFile string `yaml:"cert_file,omitempty"`
+	CertFile string `yaml:"cert_file,omitempty" json:"cert_file,omitempty"`
 	// The client key file for the targets.
-	KeyFile string `yaml:"key_file,omitempty"`
+	KeyFile string `yaml:"key_file,omitempty" json:"key_file,omitempty"`
 	// Used to verify the hostname for the targets.
-	ServerName string `yaml:"server_name,omitempty"`
+	ServerName string `yaml:"server_name,omitempty" json:"server_name,omitempty"`
 	// Disable target certificate validation.
-	InsecureSkipVerify bool `yaml:"insecure_skip_verify"`
+	InsecureSkipVerify bool `yaml:"insecure_skip_verify" json:"insecure_skip_verify,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -458,34 +458,34 @@ func (c *TLSConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // ServiceDiscoveryConfig configures lists of different service discovery mechanisms.
 type ServiceDiscoveryConfig struct {
 	// List of labeled target groups for this job.
-	StaticConfigs []*TargetGroup `yaml:"static_configs,omitempty"`
+	StaticConfigs []*TargetGroup `yaml:"static_configs,omitempty" json:"static_configs,omitempty"`
 	// List of DNS service discovery configurations.
-	DNSSDConfigs []*DNSSDConfig `yaml:"dns_sd_configs,omitempty"`
+	DNSSDConfigs []*DNSSDConfig `yaml:"dns_sd_configs,omitempty" json:"dns_sd_configs,omitempty"`
 	// List of file service discovery configurations.
-	FileSDConfigs []*FileSDConfig `yaml:"file_sd_configs,omitempty"`
+	FileSDConfigs []*FileSDConfig `yaml:"file_sd_configs,omitempty" json:"file_sd_configs,omitempty"`
 	// List of Consul service discovery configurations.
-	ConsulSDConfigs []*ConsulSDConfig `yaml:"consul_sd_configs,omitempty"`
+	ConsulSDConfigs []*ConsulSDConfig `yaml:"consul_sd_configs,omitempty" json:"consul_sd_configs,omitempty"`
 	// List of Serverset service discovery configurations.
-	ServersetSDConfigs []*ServersetSDConfig `yaml:"serverset_sd_configs,omitempty"`
+	ServersetSDConfigs []*ServersetSDConfig `yaml:"serverset_sd_configs,omitempty" json:"serverset_sd_configs,omitempty"`
 	// NerveSDConfigs is a list of Nerve service discovery configurations.
-	NerveSDConfigs []*NerveSDConfig `yaml:"nerve_sd_configs,omitempty"`
+	NerveSDConfigs []*NerveSDConfig `yaml:"nerve_sd_configs,omitempty" json:"nerve_sd_configs,omitempty"`
 	// MarathonSDConfigs is a list of Marathon service discovery configurations.
-	MarathonSDConfigs []*MarathonSDConfig `yaml:"marathon_sd_configs,omitempty"`
+	MarathonSDConfigs []*MarathonSDConfig `yaml:"marathon_sd_configs,omitempty" json:"marathon_sd_configs,omitempty"`
 	// List of Kubernetes service discovery configurations.
-	KubernetesSDConfigs []*KubernetesSDConfig `yaml:"kubernetes_sd_configs,omitempty"`
+	KubernetesSDConfigs []*KubernetesSDConfig `yaml:"kubernetes_sd_configs,omitempty" json:"kubernetes_sd_configs,omitempty"`
 	// List of GCE service discovery configurations.
-	GCESDConfigs []*GCESDConfig `yaml:"gce_sd_configs,omitempty"`
+	GCESDConfigs []*GCESDConfig `yaml:"gce_sd_configs,omitempty" json:"gce_sd_configs,omitempty"`
 	// List of EC2 service discovery configurations.
-	EC2SDConfigs []*EC2SDConfig `yaml:"ec2_sd_configs,omitempty"`
+	EC2SDConfigs []*EC2SDConfig `yaml:"ec2_sd_configs,omitempty" json:"ec2_sd_configs,omitempty"`
 	// List of OpenStack service discovery configurations.
-	OpenstackSDConfigs []*OpenstackSDConfig `yaml:"openstack_sd_configs,omitempty"`
+	OpenstackSDConfigs []*OpenstackSDConfig `yaml:"openstack_sd_configs,omitempty" json:"openstack_sd_configs,omitempty"`
 	// List of Azure service discovery configurations.
-	AzureSDConfigs []*AzureSDConfig `yaml:"azure_sd_configs,omitempty"`
+	AzureSDConfigs []*AzureSDConfig `yaml:"azure_sd_configs,omitempty" json:"azure_sd_configs,omitempty"`
 	// List of Triton service discovery configurations.
-	TritonSDConfigs []*TritonSDConfig `yaml:"triton_sd_configs,omitempty"`
+	TritonSDConfigs []*TritonSDConfig `yaml:"triton_sd_configs,omitempty" json:"triton_sd_configs,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -503,18 +503,18 @@ func (c *ServiceDiscoveryConfig) UnmarshalYAML(unmarshal func(interface{}) error
 // HTTPClientConfig configures an HTTP client.
 type HTTPClientConfig struct {
 	// The HTTP basic authentication credentials for the targets.
-	BasicAuth *BasicAuth `yaml:"basic_auth,omitempty"`
+	BasicAuth *BasicAuth `yaml:"basic_auth,omitempty" json:"basic_auth,omitempty"`
 	// The bearer token for the targets.
-	BearerToken Secret `yaml:"bearer_token,omitempty"`
+	BearerToken Secret `yaml:"bearer_token,omitempty" json:"bearer_token,omitempty"`
 	// The bearer token file for the targets.
-	BearerTokenFile string `yaml:"bearer_token_file,omitempty"`
+	BearerTokenFile string `yaml:"bearer_token_file,omitempty" json:"bearer_token_file,omitempty"`
 	// HTTP proxy server to use to connect to the targets.
-	ProxyURL URL `yaml:"proxy_url,omitempty"`
+	ProxyURL URL `yaml:"proxy_url,omitempty" json:"proxy_url,omitempty"`
 	// TLSConfig to use to connect to the targets.
-	TLSConfig TLSConfig `yaml:"tls_config,omitempty"`
+	TLSConfig TLSConfig `yaml:"tls_config,omitempty" json:"tls_config,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 func (c *HTTPClientConfig) validate() error {
@@ -530,35 +530,35 @@ func (c *HTTPClientConfig) validate() error {
 // ScrapeConfig configures a scraping unit for Prometheus.
 type ScrapeConfig struct {
 	// The job name to which the job label is set by default.
-	JobName string `yaml:"job_name"`
+	JobName string `yaml:"job_name" json:"job_name"`
 	// Indicator whether the scraped metrics should remain unmodified.
-	HonorLabels bool `yaml:"honor_labels,omitempty"`
+	HonorLabels bool `yaml:"honor_labels,omitempty" json:"honor_labels,omitempty"`
 	// A set of query parameters with which the target is scraped.
-	Params url.Values `yaml:"params,omitempty"`
+	Params url.Values `yaml:"params,omitempty" json:"params,omitempty"`
 	// How frequently to scrape the targets of this scrape config.
-	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty"`
+	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty" json:"scrape_interval,omitempty"`
 	// The timeout for scraping targets of this config.
-	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty"`
+	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty" json:"scrape_timeout,omitempty"`
 	// The HTTP resource path on which to fetch metrics from targets.
-	MetricsPath string `yaml:"metrics_path,omitempty"`
+	MetricsPath string `yaml:"metrics_path,omitempty" json:"metrics_path,omitempty"`
 	// The URL scheme with which to fetch metrics from targets.
-	Scheme string `yaml:"scheme,omitempty"`
+	Scheme string `yaml:"scheme,omitempty" json:"scheme,omitempty"`
 	// More than this many samples post metric-relabelling will cause the scrape to fail.
-	SampleLimit uint `yaml:"sample_limit,omitempty"`
+	SampleLimit uint `yaml:"sample_limit,omitempty" json:"sample_limit,omitempty"`
 
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
 
-	ServiceDiscoveryConfig ServiceDiscoveryConfig `yaml:",inline"`
-	HTTPClientConfig       HTTPClientConfig       `yaml:",inline"`
+	ServiceDiscoveryConfig ServiceDiscoveryConfig `yaml:",inline" json:",inline"`
+	HTTPClientConfig       HTTPClientConfig       `yaml:",inline" json:",inline"`
 
 	// List of target relabel configurations.
-	RelabelConfigs []*RelabelConfig `yaml:"relabel_configs,omitempty"`
+	RelabelConfigs []*RelabelConfig `yaml:"relabel_configs,omitempty" json:"relabel_configs,omitempty"`
 	// List of metric relabel configurations.
-	MetricRelabelConfigs []*RelabelConfig `yaml:"metric_relabel_configs,omitempty"`
+	MetricRelabelConfigs []*RelabelConfig `yaml:"metric_relabel_configs,omitempty" json:"metric_relabel_configs,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -598,11 +598,11 @@ func (c *ScrapeConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // AlertingConfig configures alerting and alertmanager related configs.
 type AlertingConfig struct {
-	AlertRelabelConfigs []*RelabelConfig      `yaml:"alert_relabel_configs,omitempty"`
-	AlertmanagerConfigs []*AlertmanagerConfig `yaml:"alertmanagers,omitempty"`
+	AlertRelabelConfigs []*RelabelConfig      `yaml:"alert_relabel_configs,omitempty" json:"alert_relabel_configs,omitempty"`
+	AlertmanagerConfigs []*AlertmanagerConfig `yaml:"alertmanagers,omitempty" json:"alertmanagers,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -625,21 +625,21 @@ type AlertmanagerConfig struct {
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
 
-	ServiceDiscoveryConfig ServiceDiscoveryConfig `yaml:",inline"`
-	HTTPClientConfig       HTTPClientConfig       `yaml:",inline"`
+	ServiceDiscoveryConfig ServiceDiscoveryConfig `yaml:",inline" json:",inline"`
+	HTTPClientConfig       HTTPClientConfig       `yaml:",inline" json:",inline"`
 
 	// The URL scheme to use when talking to Alertmanagers.
-	Scheme string `yaml:"scheme,omitempty"`
+	Scheme string `yaml:"scheme,omitempty" json:"scheme,omitempty"`
 	// Path prefix to add in front of the push endpoint path.
-	PathPrefix string `yaml:"path_prefix,omitempty"`
+	PathPrefix string `yaml:"path_prefix,omitempty" json:"path_prefix,omitempty"`
 	// The timeout used when sending alerts.
-	Timeout time.Duration `yaml:"timeout,omitempty"`
+	Timeout time.Duration `yaml:"timeout,omitempty" json:"timeout,omitempty"`
 
 	// List of Alertmanager relabel configurations.
-	RelabelConfigs []*RelabelConfig `yaml:"relabel_configs,omitempty"`
+	RelabelConfigs []*RelabelConfig `yaml:"relabel_configs,omitempty" json:"relabel_configs,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -684,17 +684,17 @@ func CheckTargetAddress(address model.LabelValue) error {
 
 // BasicAuth contains basic HTTP authentication credentials.
 type BasicAuth struct {
-	Username string `yaml:"username"`
-	Password Secret `yaml:"password"`
+	Username string `yaml:"username" json:"username"`
+	Password Secret `yaml:"password" json:"password"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // ClientCert contains client cert credentials.
 type ClientCert struct {
-	Cert string `yaml:"cert"`
-	Key  Secret `yaml:"key"`
+	Cert string `yaml:"cert" json:"cert"`
+	Key  Secret `yaml:"key" json:"key"`
 
 	// Catches all undefined fields and must be empty after parsing.
 	XXX map[string]interface{} `yaml:",inline"`
@@ -729,9 +729,9 @@ func (tg TargetGroup) String() string {
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
 func (tg *TargetGroup) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	g := struct {
-		Targets []string               `yaml:"targets"`
-		Labels  model.LabelSet         `yaml:"labels"`
-		XXX     map[string]interface{} `yaml:",inline"`
+		Targets []string               `yaml:"targets" json:"targets"`
+		Labels  model.LabelSet         `yaml:"labels" json:"labels"`
+		XXX     map[string]interface{} `yaml:",inline" json:",inline"`
 	}{}
 	if err := unmarshal(&g); err != nil {
 		return err
@@ -749,8 +749,8 @@ func (tg *TargetGroup) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // MarshalYAML implements the yaml.Marshaler interface.
 func (tg TargetGroup) MarshalYAML() (interface{}, error) {
 	g := &struct {
-		Targets []string       `yaml:"targets"`
-		Labels  model.LabelSet `yaml:"labels,omitempty"`
+		Targets []string       `yaml:"targets" json:"targets"`
+		Labels  model.LabelSet `yaml:"labels,omitempty" json:"labels,omitempty"`
 	}{
 		Targets: make([]string, 0, len(tg.Targets)),
 		Labels:  tg.Labels,
@@ -764,8 +764,8 @@ func (tg TargetGroup) MarshalYAML() (interface{}, error) {
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (tg *TargetGroup) UnmarshalJSON(b []byte) error {
 	g := struct {
-		Targets []string       `json:"targets"`
-		Labels  model.LabelSet `json:"labels"`
+		Targets []string       `json:"targets" json:"targets"`
+		Labels  model.LabelSet `json:"labels" json:"labels"`
 	}{}
 	if err := json.Unmarshal(b, &g); err != nil {
 		return err
@@ -782,12 +782,12 @@ func (tg *TargetGroup) UnmarshalJSON(b []byte) error {
 
 // DNSSDConfig is the configuration for DNS based service discovery.
 type DNSSDConfig struct {
-	Names           []string       `yaml:"names"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
-	Type            string         `yaml:"type"`
-	Port            int            `yaml:"port"` // Ignored for SRV records
+	Names           []string       `yaml:"names" json:"names"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	Type            string         `yaml:"type" json:"type"`
+	Port            int            `yaml:"port" json:"port"` // Ignored for SRV records
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -818,11 +818,11 @@ func (c *DNSSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // FileSDConfig is the configuration for file based discovery.
 type FileSDConfig struct {
-	Files           []string       `yaml:"files"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
+	Files           []string       `yaml:"files" json:"files"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -849,20 +849,20 @@ func (c *FileSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // ConsulSDConfig is the configuration for Consul service discovery.
 type ConsulSDConfig struct {
-	Server       string `yaml:"server"`
-	Token        Secret `yaml:"token,omitempty"`
-	Datacenter   string `yaml:"datacenter,omitempty"`
-	TagSeparator string `yaml:"tag_separator,omitempty"`
-	Scheme       string `yaml:"scheme,omitempty"`
-	Username     string `yaml:"username,omitempty"`
-	Password     Secret `yaml:"password,omitempty"`
+	Server       string `yaml:"server" json:"server"`
+	Token        Secret `yaml:"token,omitempty" json:"token,omitempty"`
+	Datacenter   string `yaml:"datacenter,omitempty" json:"datacenter,omitempty"`
+	TagSeparator string `yaml:"tag_separator,omitempty" json:"tag_separator,omitempty"`
+	Scheme       string `yaml:"scheme,omitempty" json:"scheme,omitempty"`
+	Username     string `yaml:"username,omitempty" json:"username,omitempty"`
+	Password     Secret `yaml:"password,omitempty" json:"password,omitempty"`
 	// The list of services for which targets are discovered.
 	// Defaults to all services if empty.
-	Services []string `yaml:"services"`
+	Services []string `yaml:"services" json:"services"`
 
-	TLSConfig TLSConfig `yaml:"tls_config,omitempty"`
+	TLSConfig TLSConfig `yaml:"tls_config,omitempty" json:"tls_config,omitempty"`
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -884,12 +884,12 @@ func (c *ConsulSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error 
 
 // ServersetSDConfig is the configuration for Twitter serversets in Zookeeper based discovery.
 type ServersetSDConfig struct {
-	Servers []string       `yaml:"servers"`
-	Paths   []string       `yaml:"paths"`
-	Timeout model.Duration `yaml:"timeout,omitempty"`
+	Servers []string       `yaml:"servers" json:"servers"`
+	Paths   []string       `yaml:"paths" json:"paths"`
+	Timeout model.Duration `yaml:"timeout,omitempty" json:"timeout,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -919,12 +919,12 @@ func (c *ServersetSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 // NerveSDConfig is the configuration for AirBnB's Nerve in Zookeeper based discovery.
 type NerveSDConfig struct {
-	Servers []string       `yaml:"servers"`
-	Paths   []string       `yaml:"paths"`
-	Timeout model.Duration `yaml:"timeout,omitempty"`
+	Servers []string       `yaml:"servers" json:"servers"`
+	Paths   []string       `yaml:"paths" json:"paths"`
+	Timeout model.Duration `yaml:"timeout,omitempty" json:"timeout,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -954,15 +954,15 @@ func (c *NerveSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // MarathonSDConfig is the configuration for services running on Marathon.
 type MarathonSDConfig struct {
-	Servers         []string       `yaml:"servers,omitempty"`
-	Timeout         model.Duration `yaml:"timeout,omitempty"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
-	TLSConfig       TLSConfig      `yaml:"tls_config,omitempty"`
-	BearerToken     Secret         `yaml:"bearer_token,omitempty"`
-	BearerTokenFile string         `yaml:"bearer_token_file,omitempty"`
+	Servers         []string       `yaml:"servers,omitempty" json:"servers,omitempty"`
+	Timeout         model.Duration `yaml:"timeout,omitempty" json:"timeout,omitempty"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	TLSConfig       TLSConfig      `yaml:"tls_config,omitempty" json:"tls_config,omitempty"`
+	BearerToken     Secret         `yaml:"bearer_token,omitempty" json:"bearer_token,omitempty"`
+	BearerTokenFile string         `yaml:"bearer_token_file,omitempty" json:"bearer_token_file,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1012,13 +1012,13 @@ func (c *KubernetesRole) UnmarshalYAML(unmarshal func(interface{}) error) error 
 
 // KubernetesSDConfig is the configuration for Kubernetes service discovery.
 type KubernetesSDConfig struct {
-	APIServer          URL                          `yaml:"api_server"`
-	Role               KubernetesRole               `yaml:"role"`
-	BasicAuth          *BasicAuth                   `yaml:"basic_auth,omitempty"`
-	BearerToken        Secret                       `yaml:"bearer_token,omitempty"`
-	BearerTokenFile    string                       `yaml:"bearer_token_file,omitempty"`
-	TLSConfig          TLSConfig                    `yaml:"tls_config,omitempty"`
-	NamespaceDiscovery KubernetesNamespaceDiscovery `yaml:"namespaces"`
+	APIServer          URL                          `yaml:"api_server" json:"api_server"`
+	Role               KubernetesRole               `yaml:"role" json:"role"`
+	BasicAuth          *BasicAuth                   `yaml:"basic_auth,omitempty" json:"basic_auth,omitempty"`
+	BearerToken        Secret                       `yaml:"bearer_token,omitempty" json:"bearer_token,omitempty"`
+	BearerTokenFile    string                       `yaml:"bearer_token_file,omitempty" json:"bearer_token_file,omitempty"`
+	TLSConfig          TLSConfig                    `yaml:"tls_config,omitempty" json:"tls_config,omitempty"`
+	NamespaceDiscovery KubernetesNamespaceDiscovery `yaml:"namespaces" json:"namespaces,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
 	XXX map[string]interface{} `yaml:",inline"`
@@ -1088,12 +1088,12 @@ type GCESDConfig struct {
 	// https://cloud.google.com/compute/docs/reference/latest/instances/list
 	Filter string `yaml:"filter,omitempty"`
 
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
-	Port            int            `yaml:"port"`
-	TagSeparator    string         `yaml:"tag_separator,omitempty"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	Port            int            `yaml:"port" json:"port"`
+	TagSeparator    string         `yaml:"tag_separator,omitempty" json:"tag_separator,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1118,15 +1118,15 @@ func (c *GCESDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // EC2SDConfig is the configuration for EC2 based service discovery.
 type EC2SDConfig struct {
-	Region          string         `yaml:"region"`
-	AccessKey       string         `yaml:"access_key,omitempty"`
-	SecretKey       Secret         `yaml:"secret_key,omitempty"`
-	Profile         string         `yaml:"profile,omitempty"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
-	Port            int            `yaml:"port"`
+	Region          string         `yaml:"region" json:"region"`
+	AccessKey       string         `yaml:"access_key,omitempty" json:"access_key,omitempty"`
+	SecretKey       Secret         `yaml:"secret_key,omitempty" json:"secret_key,omitempty"`
+	Profile         string         `yaml:"profile,omitempty" json:"profile,omitempty"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	Port            int            `yaml:"port" json:"port"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1157,20 +1157,20 @@ func (c *EC2SDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // OpenstackSDConfig is the configuration for OpenStack based service discovery.
 type OpenstackSDConfig struct {
-	IdentityEndpoint string         `yaml:"identity_endpoint"`
-	Username         string         `yaml:"username"`
-	UserID           string         `yaml:"userid"`
-	Password         Secret         `yaml:"password"`
-	ProjectName      string         `yaml:"project_name"`
-	ProjectID        string         `yaml:"project_id"`
-	DomainName       string         `yaml:"domain_name"`
-	DomainID         string         `yaml:"domain_id"`
-	Region           string         `yaml:"region"`
-	RefreshInterval  model.Duration `yaml:"refresh_interval,omitempty"`
-	Port             int            `yaml:"port"`
+	IdentityEndpoint string         `yaml:"identity_endpoint" json:"identity_endpoint"`
+	Username         string         `yaml:"username" json:"username"`
+	UserID           string         `yaml:"userid" json:"userid"`
+	Password         Secret         `yaml:"password" json:"password"`
+	ProjectName      string         `yaml:"project_name" json:"project_name"`
+	ProjectID        string         `yaml:"project_id" json:"project_id"`
+	DomainName       string         `yaml:"domain_name" json:"domain_name"`
+	DomainID         string         `yaml:"domain_id" json:"domain_id"`
+	Region           string         `yaml:"region" json:"region"`
+	RefreshInterval  model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	Port             int            `yaml:"port" json:"port"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1186,15 +1186,15 @@ func (c *OpenstackSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 // AzureSDConfig is the configuration for Azure based service discovery.
 type AzureSDConfig struct {
-	Port            int            `yaml:"port"`
-	SubscriptionID  string         `yaml:"subscription_id"`
-	TenantID        string         `yaml:"tenant_id,omitempty"`
-	ClientID        string         `yaml:"client_id,omitempty"`
-	ClientSecret    Secret         `yaml:"client_secret,omitempty"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
+	Port            int            `yaml:"port" json:"port"`
+	SubscriptionID  string         `yaml:"subscription_id" json:"subscription_id"`
+	TenantID        string         `yaml:"tenant_id,omitempty" json:"tenant_id,omitempty"`
+	ClientID        string         `yaml:"client_id,omitempty" json:"client_id,omitempty"`
+	ClientSecret    Secret         `yaml:"client_secret,omitempty" json:"client_secret,omitempty"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1211,15 +1211,15 @@ func (c *AzureSDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // TritonSDConfig is the configuration for Triton based service discovery.
 type TritonSDConfig struct {
-	Account         string         `yaml:"account"`
-	DNSSuffix       string         `yaml:"dns_suffix"`
-	Endpoint        string         `yaml:"endpoint"`
-	Port            int            `yaml:"port"`
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
-	TLSConfig       TLSConfig      `yaml:"tls_config,omitempty"`
-	Version         int            `yaml:"version"`
+	Account         string         `yaml:"account" json:"account"`
+	DNSSuffix       string         `yaml:"dns_suffix" json:"dns_suffix"`
+	Endpoint        string         `yaml:"endpoint" json:"endpoint"`
+	Port            int            `yaml:"port" json:"port"`
+	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty" json:"refresh_interval,omitempty"`
+	TLSConfig       TLSConfig      `yaml:"tls_config,omitempty" json:"tls_config,omitempty"`
+	Version         int            `yaml:"version" json:"version"`
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1283,23 +1283,23 @@ func (a *RelabelAction) UnmarshalYAML(unmarshal func(interface{}) error) error {
 type RelabelConfig struct {
 	// A list of labels from which values are taken and concatenated
 	// with the configured separator in order.
-	SourceLabels model.LabelNames `yaml:"source_labels,flow"`
+	SourceLabels model.LabelNames `yaml:"source_labels,flow" json:"source_labels,flow"`
 	// Separator is the string between concatenated values from the source labels.
-	Separator string `yaml:"separator,omitempty"`
+	Separator string `yaml:"separator,omitempty" json:"separator,omitempty"`
 	// Regex against which the concatenation is matched.
-	Regex Regexp `yaml:"regex,omitempty"`
+	Regex Regexp `yaml:"regex,omitempty" json:"regex,omitempty"`
 	// Modulus to take of the hash of concatenated values from the source labels.
-	Modulus uint64 `yaml:"modulus,omitempty"`
+	Modulus uint64 `yaml:"modulus,omitempty" json:"modulus,omitempty"`
 	// TargetLabel is the label to which the resulting string is written in a replacement.
 	// Regexp interpolation is allowed for the replace action.
-	TargetLabel string `yaml:"target_label,omitempty"`
+	TargetLabel string `yaml:"target_label,omitempty" json:"target_label,omitempty"`
 	// Replacement is the regex replacement pattern to be used.
-	Replacement string `yaml:"replacement,omitempty"`
+	Replacement string `yaml:"replacement,omitempty" json:"replacement,omitempty"`
 	// Action is the action to be performed for the relabeling.
-	Action RelabelAction `yaml:"action,omitempty"`
+	Action RelabelAction `yaml:"action,omitempty" json:"action,omitempty"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1390,16 +1390,16 @@ func (re Regexp) MarshalYAML() (interface{}, error) {
 
 // RemoteWriteConfig is the configuration for writing to remote storage.
 type RemoteWriteConfig struct {
-	URL                 *URL             `yaml:"url,omitempty"`
-	RemoteTimeout       model.Duration   `yaml:"remote_timeout,omitempty"`
-	WriteRelabelConfigs []*RelabelConfig `yaml:"write_relabel_configs,omitempty"`
+	URL                 *URL             `yaml:"url,omitempty" json:"url,omitempty"`
+	RemoteTimeout       model.Duration   `yaml:"remote_timeout,omitempty" json:"remote_timeout,omitempty"`
+	WriteRelabelConfigs []*RelabelConfig `yaml:"write_relabel_configs,omitempty" json:"write_relabel_configs,omitempty"`
 
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
-	HTTPClientConfig HTTPClientConfig `yaml:",inline"`
+	HTTPClientConfig HTTPClientConfig `yaml:",inline" json:",inline"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -1417,15 +1417,15 @@ func (c *RemoteWriteConfig) UnmarshalYAML(unmarshal func(interface{}) error) err
 
 // RemoteReadConfig is the configuration for reading from remote storage.
 type RemoteReadConfig struct {
-	URL           *URL           `yaml:"url,omitempty"`
-	RemoteTimeout model.Duration `yaml:"remote_timeout,omitempty"`
+	URL           *URL           `yaml:"url,omitempty" json:"url,omitempty"`
+	RemoteTimeout model.Duration `yaml:"remote_timeout,omitempty" json:"remote_timeout,,omitempty"`
 
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
-	HTTPClientConfig HTTPClientConfig `yaml:",inline"`
+	HTTPClientConfig HTTPClientConfig `yaml:",inline" json:",inline"`
 
 	// Catches all undefined fields and must be empty after parsing.
-	XXX map[string]interface{} `yaml:",inline"`
+	XXX map[string]interface{} `yaml:",inline" json:",inline"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
